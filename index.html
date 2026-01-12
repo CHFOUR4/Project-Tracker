@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Project Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>My Project Tracker</h1>
+
+<div id="project-form">
+  <input type="text" id="projectName" placeholder="New project name">
+  <button onclick="addProject()">Add Project</button>
+</div>
+
+<ul id="projectList"></ul>
+
+<!-- Project Details -->
+<div id="projectDetails" style="display:none;">
+  <h2 id="detailTitle"></h2>
+
+  <h3>Tasks</h3>
+  <input type="text" id="taskInput" placeholder="New task">
+  <button onclick="addTask()">Add Task</button>
+  <ul id="taskList"></ul>
+
+  <h3>Daily Follow-Up</h3>
+  <textarea id="logInput" placeholder="What did you do today?"></textarea>
+  <button onclick="addLog()">Save Log</button>
+  <ul id="logList"></ul>
+
+  <button onclick="backToProjects()">⬅ Back</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
