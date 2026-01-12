@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Project Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>My Project Tracker</h1>
+
+<div id="project-form">
+  <input type="text" id="projectName" placeholder="New project name">
+  <button onclick="addProject()">Add Project</button>
+</div>
+
+<ul id="projectList"></ul>
+
+<!-- Project Details -->
+<div id="projectDetails" style="display:none;">
+  <h2 id="detailTitle"></h2>
+
+  <h3>Tasks</h3>
+  <input type="text" id="taskInput" placeholder="New task">
+  <button onclick="addTask()">Add Task</button>
+  <ul id="taskList"></ul>
+
+  <h3>Daily Follow-Up</h3>
+  <textarea id="logInput" placeholder="What did you do today?"></textarea>
+  <button onclick="addLog()">Save Log</button>
+  <ul id="logList"></ul>
+
+  <button onclick="backToProjects()">⬅ Back</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  padding: 20px;
+}
+
+h1, h2, h3 {
+  text-align: center;
+}
+
+#project-form, #projectDetails {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+}
+
+button {
+  margin-top: 5px;
+  padding: 8px;
+  width: 100%;
+  cursor: pointer;
+}
+
+li {
+  list-style: none;
+  background: #eee;
+  margin: 5px 0;
+  padding: 5px;
+  cursor: pointer;
+}
+let projects = JSON.parse(localStorage.getItem("projects")) || [];
+let currentProjectIndex = null;
+
+function save() {
+  localStorage.setItem("projects", JSON.stringify(projects));
+}
+
+function addProject() {
+  const name = projectName.value;
+  if (!name) return;
+
+  projects.push({ name, tasks: [], logs: [] });
+  projectName.value = "";
+  save();
+  displayProjects();
+}
+
+function displayProjects() {
+  projectList.innerHTML = "";
+  projectDetails.style.display = "none";
+
+  projects.forEach((p, index) => {
+    const li = document.createElement("li");
+    li.innerText = p.name;
+    li.onclick = () => openProject(index);
+    projectList.appendChild(li);
+  });
+}
+
+function openProject(index) {
+  currentProjectIndex = index;
+  detailTitle.innerText = projects[index].name;
+  projectDetails.style.display = "block";
+  displayTasks();
+  displayLogs();
+}
+
+function backToProjects() {
+  projectDetails.style.display = "none";
+}
+
+function addTask() {
+  const task = taskInput.value;
+  if (!task) return;
+
+  projects[currentProjectIndex].tasks.push(task);
+  taskInput.value = "";
+  save();
+  displayTasks();
+}
+
+function displayTasks() {
+  taskList.innerHTML = "";
+  projects[currentProjectIndex].tasks.forEach(t => {
+    const li = document.createElement("li");
+    li.innerText = "☐ " + t;
+    taskList.appendChild(li);
+  });
+}
+
+function addLog() {
+  const log = logInput.value;
+  if (!log) return;
+
+  const date = new Date().toLocaleDateString();
+  projects[currentProjectIndex].logs.push(`${date}: ${log}`);
+  logInput.value = "";
+  save();
+  displayLogs();
+}
+
+function displayLogs() {
+  logList.innerHTML = "";
+  projects[currentProjectIndex].logs.forEach(l => {
+    const li = document.createElement("li");
+    li.innerText = l;
+    logList.appendChild(li);
+  });
+}
+
+displayProjects();
